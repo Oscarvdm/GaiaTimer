@@ -33,9 +33,17 @@ jobs:
     - name: Add Android Platform
       run: cordova platform add android@12.0.0 --save
 
-    - name: Install Android Build Tools 33.0.2
+    - name: Install Android SDK and Build Tools
       run: |
+        mkdir -p $ANDROID_HOME/cmdline-tools
+        wget https://dl.google.com/android/repository/commandlinetools-linux-8583020_latest.zip -O /tmp/commandlinetools.zip
+        unzip /tmp/commandlinetools.zip -d $ANDROID_HOME/cmdline-tools/latest
+        export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
+        yes | sdkmanager --licenses
         sdkmanager "build-tools;33.0.2"
+      env:
+        ANDROID_HOME: /usr/local/lib/android/sdk
+
 
     - name: Build Android Release APK
       run: cordova build android --release
