@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GaiaTimer</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="text-centered">
+<div id="container">
+<div id="header" class="border-common text-centered">
+<div id="title">GaiaTimer</div>
+<div id="version">version 1.0</div>
+</div> <!-- Closes header -->
+<div id="main-screen">
+  <div id="timeSettingsContainer" class="container">
+
+      <div id="roundTimeDiv" class="time-setting-item">
+        <label for="roundTimeInput" class="cursor-pointer">Turn Time:</label>
+        <input type="number" id="roundTimeInput" class="text-centered" min="1" value="45">
+      </div>
+
+
+      <div id="bufferTimeDiv" class="time-setting-item">
+        <label for="bufferTimeInput" class="cursor-pointer">Buffer Time:</label>
+        <input type="number" id="bufferTimeInput" class="text-centered" min="1" value="900">
+      </div>
+
+  </div>
+  <div id="playerSettingsContainer" class="container">
+    <!-- Player name and faction inputs will be dynamically added here by main.js -->
+  </div>
+  <button id="startGameBtn" class="button flex-center text-centered cursor-pointer">Start Game</button>
+</div>
+
+<div id="timer-screen">
+  <div class="timers" id="timers"></div>
+  <button id="stopGameBtn" class="button flex-center text-centered cursor-pointer">Stop Game</button>
+</div>
+<div id="footerspace"></div>
+<div id="footer" class="border-common text-centered"><div id="dino">🦖 Made by Dino</div><div id="mrauw">"Mrauw!"</div></div>
+
+</div>
+      <script src="timer.js"></script>
+      <script src="main.js"></script>
+</body>
+</html>

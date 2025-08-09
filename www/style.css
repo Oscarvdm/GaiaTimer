@@ -1,0 +1,507 @@
+:root {
+    --color-dark-slate-gray: DarkSlateGray;
+    --color-light-slate-gray: LightSlateGray;
+    --color-background-body: #2f2b47;
+    --color-text-light: white;
+    --color-button-primary-bg: Green;
+    --color-accent-red: red;
+    --color-accent-lime: lime;
+    --color-timer-selected-bg: LightSeaGreen;
+    --color-timer-running-border: LimeGreen;
+    --color-timer-paused-border: Gold;
+    --color-faction-name: #000000;
+    --color-title: LightSteelBlue;
+    --color-settings-text-main: #eee;
+    --color-settings-text-secondary: #000000;
+    --color-settings-item-bg: #3a3a3a;
+    --color-settings-input-bg: #555;
+    --color-settings-border-light: #555;
+    --color-settings-border-medium: #666;
+    --color-settings-border-dark: #444; /* Added for potential use */
+    --color-settings-player-item-border: #505050;
+    --color-add-player-bg: #4CAF50;
+    --color-delete-player-bg: #f44336;
+    --color-start-game-bg: DarkGreen;
+    --color-stop-game-bg: DarkRed;
+    --color-round-time-bg: rgba(0, 255, 0, 0.2);
+    --color-buffer-time-bg: rgba(255, 0, 0, 0.2);
+
+    --unit-vmin-1: 1vmin;
+    --unit-vmin-half: 0.5vmin;
+    --unit-vmin-2: 2vmin;
+    --unit-vmin-3: 3vmin;
+    --unit-vmin-5: 5vmin;
+    --unit-vmin-7: 7vmin;
+    --unit-vmin-4: 4vmin; /* For startGameBtn font-size */
+    --unit-vmin-4-5: 4.5vmin; /* For stopGameBtn font-size */
+    --unit-vmin-1-5: 1.5vmin; /* For playerNameDiv margin and settings-container gap */
+
+    --space-xs: 5px;
+    --space-s: 10px;
+    --space-m: 15px;
+    --space-l: 20px;
+
+    --border-radius-xs: 4px;
+    --border-radius-s: 5px;
+    --border-radius-m: 8px;
+    --border-radius-std: 1vmin; /* Standard vmin based radius */
+}
+/* .border-common is now integrated into .game-card */
+/*
+.border-common {
+    border-radius: var(--border-radius-std);
+    border: var(--unit-vmin-half) solid var(--color-dark-slate-gray);
+}
+*/
+
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.text-centered {
+    text-align: center;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+#roundTimeDiv {
+    background-color: var(--color-round-time-bg);
+}
+
+#bufferTimeDiv {
+    background-color: var(--color-buffer-time-bg);
+}
+
+.timers {
+      display: grid;
+      /* Adjust grid if player cards have a different footprint, for now keeps 45vmin basis */
+      grid-template-columns: repeat(auto-fit, minmax(45vmin, 1fr));
+      grid-gap: var(--unit-vmin-1);
+    }
+
+    .game-card {
+        --card-scale-factor: 1; /* Default scale for timer-mode */
+
+        width: calc(45vmin * var(--card-scale-factor));
+        height: calc(35vmin * var(--card-scale-factor));
+        background-color: var(--color-light-slate-gray); /* Base, faction color will override */
+        padding: calc(var(--unit-vmin-1) * var(--card-scale-factor));
+        margin: var(--unit-vmin-1) auto; /* Margin can remain unscaled for grid spacing */
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+
+        /* Integrated border-common styles, scaled */
+        border-radius: calc(var(--border-radius-std) * var(--card-scale-factor));
+        border-width: calc(var(--unit-vmin-half) * var(--card-scale-factor));
+        border-style: solid;
+        border-color: var(--color-dark-slate-gray);
+    }
+
+    .game-card.player-mode {
+        --card-scale-factor: 0.75;
+        /* Player mode scales the card down. */
+    }
+
+    .game-card.selected {
+      background-color: var(--color-timer-selected-bg); /* This might need adjustment if faction color is also present */
+    }
+    .game-card.running {
+      border-color: var(--color-timer-running-border); /* Vibrant green for running */
+    }
+
+    .game-card.paused {
+      border-color: var(--color-timer-paused-border); /* Gold/yellow for paused */
+    }
+
+.background-flash {
+  animation: flash-background 0.5s ease-out;
+}
+
+@keyframes flash-background {
+  0% {
+    background-color: var(--color-accent-red);
+  }
+  50% {
+    background-color: var(--color-accent-red);
+  }
+  100% {
+    background-color: var(--color-background-body); /* Original body background color */
+  }
+}
+    .roundClock{
+        color: var(--color-accent-lime);
+    }
+    .bufferClock{
+        color: var(--color-accent-red);
+    }
+    .button{
+        margin: var(--unit-vmin-1) auto;
+    width: 25vmin; /* Keep 25vmin hardcoded as it's a specific dimension */
+  height: var(--unit-vmin-7);
+    border-radius: var(--border-radius-std);
+    font-size: inherit;
+    background-color: var(--color-button-primary-bg);
+    color: var(--color-text-light);
+    }
+.game-card .headDiv{ /* Scoped to .game-card */
+    display: flex;
+    /* height: calc(17vmin * var(--card-scale-factor)); */ /* Height is content-driven */
+}
+.game-card .clockDiv{ /* Scoped to .game-card */
+    display: flex;
+    height: calc(19vmin * var(--card-scale-factor)); /* Scaled height */
+    /* If this div is not present in player-mode, this rule won't apply or matter */
+}
+.game-card .avatarDiv{ /* Scoped to .game-card */
+    margin: calc(var(--unit-vmin-1) * var(--card-scale-factor));
+    width: calc(15vmin * var(--card-scale-factor));
+    height: calc(15vmin * var(--card-scale-factor));
+}
+.game-card .clock{ /* Scoped to .game-card */
+    font-weight: 900;
+    width: calc(20vmin * var(--card-scale-factor));
+    height: calc(10vmin * var(--card-scale-factor));
+    background-color: var(--color-dark-slate-gray);
+    margin: calc(var(--unit-vmin-1) * var(--card-scale-factor)) calc(var(--unit-vmin-1) * var(--card-scale-factor));
+    font-size: calc(var(--unit-vmin-7) * var(--card-scale-factor));
+    border-radius: calc(var(--border-radius-std) * var(--card-scale-factor)); /* Scale border-radius */
+    padding: calc(var(--unit-vmin-1) * var(--card-scale-factor));
+}
+.game-card .playerDiv{ /* Scoped to .game-card */
+    margin: calc(var(--unit-vmin-1) * var(--card-scale-factor)) calc(var(--unit-vmin-2) * var(--card-scale-factor));
+    text-align: left;
+}
+.game-card .playerNameDiv{ /* Scoped to .game-card */
+    font-size: calc(var(--unit-vmin-5) * var(--card-scale-factor));
+    margin: calc(var(--unit-vmin-1-5) * var(--card-scale-factor)) 0;
+    width: calc(25vmin * var(--card-scale-factor));
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+}
+.game-card .factionNameDiv { /* Scoped to .game-card */
+    font-size: calc(var(--unit-vmin-3) * var(--card-scale-factor));
+    margin: calc(var(--unit-vmin-half) * var(--card-scale-factor)) 0;
+    width: calc(25vmin * var(--card-scale-factor));
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+    color: var(--color-faction-name);
+}
+.playerChangeDiv{
+    margin: var(--unit-vmin-1) 0;
+}
+.dropdown{
+    margin: 0 0 0 var(--unit-vmin-1);
+}
+#header{
+    background-blend-mode: multiply;
+
+  background: url('assets/bg.jpg') no-repeat center/cover;
+  background-color: rgba(47, 43, 71, 0.8); /* Set the background color to white with 50% opacity */
+}
+
+#title{
+    font-size: 10vmin; /* Specific dimension */
+    font-weight: 900;
+    color: var(--color-title);
+}
+#version{
+    font-size: var(--unit-vmin-2);
+    font-weight: 900;
+    color: var(--color-light-slate-gray);
+}
+#footer{
+    position: fixed;
+  bottom: 0;
+  left: 0;
+  font-size: 2.5vmin; /* Keep 2.5vmin or create new var */
+        background-color: var(--color-light-slate-gray);
+     width:100%;
+  height: var(--unit-vmin-7);
+
+}
+#footerspace{
+    height: var(--unit-vmin-7);
+    margin: var(--unit-vmin-1);
+}
+.container{
+    display: flex;
+}
+#reset{
+    background-color: var(--color-accent-red);
+}
+
+select{
+    width: 15vmin; /* Specific dimension */
+    height: var(--unit-vmin-5);
+    bottom: 0;
+    margin: auto;
+    font-size: 2.5vmin; /* Keep 2.5vmin or create new var */
+    border-radius: var(--border-radius-std);
+}
+input{
+    width: 15vmin; /* Specific dimension */
+    margin: auto;
+    font-size: inherit;
+    border-radius: var(--border-radius-std);
+}
+body {
+    margin: auto;
+    background-color: var(--color-background-body);
+    font-size: var(--unit-vmin-3); /* Assuming 3.5vmin was a typo or can be adjusted to 3 or 4 */
+}
+
+#main-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--unit-vmin-2);
+  /* Add other styles as needed for layout of settings */
+}
+
+#timer-screen {
+  display: block; /* Initially managed by JS, but good to define */
+  padding: var(--unit-vmin-1);
+  /* Timers will be laid out by .timers class */
+}
+
+#startGameBtn {
+  /* Inherits .button styles, add specifics if needed */
+  background-color: var(--color-start-game-bg); /* More prominent */
+  font-size: var(--unit-vmin-4);
+  padding: var(--unit-vmin-1-5) var(--unit-vmin-3);
+  height: auto; /* Adjust if fixed height from .button is not desired */
+  width: 30vmin; /* Specific dimension */
+}
+
+#stopGameBtn {
+  /* Inherits .button styles, add specifics if needed */
+  background-color: var(--color-stop-game-bg);
+  margin-top: var(--unit-vmin-2); /* Space above the button */
+  width: 35vmin; /* Specific dimension */
+  font-size: var(--unit-vmin-4-5); /* Increased font size */
+  padding: var(--unit-vmin-2) 3.5vmin; /* Keep 3.5vmin or make var --unit-vmin-3-5 */
+  height: auto; /* Adjust height to content */
+}
+
+/* Adjustments for elements moved to main-screen if necessary */
+/* For example, if #header elements are now direct children of #main-screen,
+   their styles might need to be scoped or adjusted.
+   However, the prompt implies settings elements are *within* main-screen,
+   not that #header itself is moved.
+   The existing #header style might be for the overall page header,
+   which might now be part of main-screen or a separate static header.
+   Let's assume for now that the settings elements (like player setup, round/buffer time inputs)
+   are what's being referred to and will be inside #main-screen.
+*/
+
+/* Ensure settings elements are well-organized in main-screen */
+#main-screen .settings-container { /* Assuming a container for settings */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--unit-vmin-1-5);
+    margin-bottom: var(--unit-vmin-2);
+    width: 100%;
+}
+
+#main-screen .playerDiv,
+#main-screen .container, /* This class is used for round/buffer time inputs */
+#main-screen #addPlayer {
+    margin-left: auto; /* Center these elements if they are direct children */
+    margin-right: auto;
+}
+
+/* Ensure timer display elements are primary focus on timer-screen */
+#timer-screen .timers {
+    /* .timers already has grid display. Ensure it fills space well. */
+    width: 100%;
+}
+/* Styles for Player Settings */
+#playerSettingsContainer {
+    display: grid; /* Use grid layout */
+    grid-template-columns: repeat(auto-fit, minmax(calc(45vmin * 0.75), 1fr)); /* Base width on scaled game card */
+    grid-gap: var(--unit-vmin-1); /* Similar to .timers */
+    padding: var(--space-m);
+    margin-top: var(--space-m);
+    /* border-radius: var(--border-radius-m); */ /* Individual items will have radius */
+    box-sizing: border-box;
+}
+
+#playerSettingsContainer h3 {
+    color: var(--color-settings-text-main);
+    grid-column: 1 / -1; /* Make H3 span all columns */
+    margin-top: 0;
+    margin-bottom: var(--space-m); /* Increased margin */
+    border-bottom: 1px solid var(--color-settings-border-light);
+    padding-bottom: var(--space-s); /* Increased padding */
+}
+
+.player-setting-item {
+    --card-scale-factor: 0.75; /* Apply player-mode scale */
+
+    /* Inherit game-card base styles */
+    width: calc(45vmin * var(--card-scale-factor));
+    height: calc(25vmin * var(--card-scale-factor)); /* Match scaled game card height */
+    /* background-color will be set by JS based on faction */
+    padding: calc(var(--unit-vmin-1) * var(--card-scale-factor));
+    margin: 0; /* Grid gap handles spacing */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Align items to the top */
+
+    border-radius: calc(var(--border-radius-std) * var(--card-scale-factor));
+    border-width: calc(var(--unit-vmin-half) * var(--card-scale-factor));
+    border-style: solid;
+    border-color: var(--color-dark-slate-gray); /* Default border color */
+    
+    position: relative; /* For absolute positioning of delete button */
+    overflow: hidden; /* Prevent content spill from scaled elements */
+}
+
+/* Remove .avatarDiv-setting, will use .game-card .avatarDiv structure and styles */
+/* .player-setting-item .avatarDiv-setting { ... } */
+
+.player-setting-item .headDiv { /* Structure from game-card */
+    display: flex;
+    /* height will be content-driven by avatar and playerInfo */
+}
+
+.player-setting-item .avatarDiv { /* Uses game-card .avatarDiv styles, scaled */
+    margin: calc(var(--unit-vmin-1) * var(--card-scale-factor));
+    width: calc(15vmin * var(--card-scale-factor));
+    height: calc(15vmin * var(--card-scale-factor));
+    object-fit: cover; /* Ensure image covers the area */
+    border-radius: calc(var(--border-radius-s) * var(--card-scale-factor)); /* Consistent rounding */
+}
+
+.player-setting-item .playerDiv { /* Now contains labels and inputs */
+    margin: calc(var(--unit-vmin-1) * var(--card-scale-factor)) calc(var(--unit-vmin-2) * var(--card-scale-factor));
+    text-align: left;
+    flex-grow: 1; /* Allow it to take space next to avatar */
+    display: flex;
+    flex-direction: column; /* Stack label/input pairs vertically */
+    justify-content: center; /* Center content vertically if space allows */
+    gap: calc(var(--unit-vmin-half) * 0.5 * var(--card-scale-factor)); /* Small gap between label/input groups */
+}
+
+/* Remove styles for .playerNameDiv and .factionNameDiv within .player-setting-item, as they are replaced by inputs */
+/*
+.player-setting-item .playerNameDiv,
+.player-setting-item .factionNameDiv {
+    width: calc(100% - (2 * var(--unit-vmin-1) * var(--card-scale-factor)));
+}
+*/
+
+/* Remove .inputs-container styles as it's no longer used */
+/*
+.player-setting-item .inputs-container {
+    padding-top: calc(var(--unit-vmin-half) * var(--card-scale-factor));
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--unit-vmin-half) * var(--card-scale-factor));
+}
+*/
+
+/* Styles for labels and inputs directly within .player-setting-item .playerDiv */
+.player-setting-item .playerDiv label {
+    color: var(--color-settings-text-secondary);
+    margin-bottom: calc(var(--unit-vmin-half) * 0.25 * var(--card-scale-factor)); /* Even smaller margin for tighter packing */
+    font-size: calc(var(--unit-vmin-2) * var(--card-scale-factor));
+    text-align: left;
+    display: block; /* Ensure label takes its own line if needed */
+}
+
+.player-setting-item .playerDiv input[type="text"],
+.player-setting-item .playerDiv select {
+    border-radius: calc(var(--border-radius-xs) * var(--card-scale-factor));
+    border: calc(1px * var(--card-scale-factor)) solid var(--color-settings-border-medium);
+    background-color: var(--color-settings-input-bg);
+    color: var(--color-text-light);
+    width: 100%;
+    box-sizing: border-box;
+    /* margin-bottom removed, gap on parent .playerDiv handles spacing between pairs */
+    padding: calc(var(--unit-vmin-half) * var(--card-scale-factor));
+    font-size: calc(var(--unit-vmin-3) * var(--card-scale-factor));
+}
+.player-setting-item .playerDiv select {
+    height: auto;
+}
+
+
+.add-player-btn-settings {
+    /* Style for the new '+' button in settings */
+    width: calc(45vmin * 0.75); /* Match scaled game card width */
+    height: calc(25vmin * 0.75); /* Match scaled game card height */
+    font-size: calc(8vmin * 0.75); /* Scale font size */
+    line-height: calc(35vmin * 0.75); /* Center plus sign vertically */
+    margin: 0; /* Grid gap handles spacing */
+    background-color: var(--color-add-player-bg);
+    color: var(--color-text-light);
+    border: var(--unit-vmin-half) solid var(--color-dark-slate-gray); /* Consistent border */
+    border-radius: var(--border-radius-std); /* Consistent radius */
+}
+
+.delete-player-btn {
+    /* Style for the 'X' delete button in each player setting item */
+    position: absolute; /* Position relative to player-setting-item */
+    top: var(--unit-vmin-half);
+    right: var(--unit-vmin-half);
+    background-color: var(--color-delete-player-bg); /* Red */
+    color: var(--color-text-light);
+    border: none;
+    border-radius: var(--border-radius-xs);
+    padding: var(--space-xs) var(--space-s);
+}
+
+#timeSettingsContainer {
+    display: flex;
+    justify-content: center; /* Center items horizontally */
+    align-items: center;
+    margin-bottom: var(--space-m); /* Space below this container */
+    gap: var(--space-l); /* Space between the two time setting items */
+}
+
+/* Ensure inputs in this container are styled consistently if needed */
+#timeSettingsContainer input[type="number"] {
+    width: 10vmin; /* Specific dimension */
+    height: 6vmin; /* Specific dimension */
+    font-size: var(--unit-vmin-3); /* Adjust font size as needed */
+}
+#timeSettingsContainer .turn-time-wrapper {
+    background-color: var(--color-round-time-bg); /* Light green shade */
+    padding: var(--space-s);
+    border-radius: var(--border-radius-s);
+}
+
+#timeSettingsContainer .buffer-time-wrapper {
+    background-color: var(--color-buffer-time-bg); /* Light red shade */
+    padding: var(--space-s);
+    border-radius: var(--border-radius-s);
+}
+
+#timeSettingsContainer .time-setting-item {
+    display: flex;
+    flex-direction: row; /* Align items horizontally */
+    align-items: center; /* Center items vertically */
+    gap: var(--space-s); /* Space between label and input */
+    padding: var(--space-s);
+    border-radius: var(--border-radius-s);
+}
+
+#timeSettingsContainer .time-setting-item label {
+    margin-bottom: 0; /* Remove bottom margin as they are side-by-side */
+    color: var(--color-settings-text-main); /* Ensure label color is visible */
+    font-weight: bold;
+    margin-right: var(--space-s); /* Space between delete button and other elements */    
+}
+
+.player-setting-item br {
+    display: none;
+}
