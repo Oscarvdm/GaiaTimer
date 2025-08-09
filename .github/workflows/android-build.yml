@@ -44,7 +44,7 @@ jobs:
           "build-tools;33.0.2"
 
     - name: Build Android Release APK
-      run: cordova build android --release --outputType=apk
+      run: cordova build android --release -- --packageType=apk
 
     - name: Sign APK (Placeholder - Requires Keystore and Password as Secrets)
       run: |
