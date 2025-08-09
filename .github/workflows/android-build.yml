@@ -22,15 +22,16 @@ jobs:
       with:
         node-version: '20'
 
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
+      with:
+        gradle-version: 8.7
+
     - name: Install Cordova CLI
       run: npm install -g cordova@12.0.0
 
     - name: Add Android Platform
       run: cordova platform add android@12.0.0 --save
-
-    - name: Set Gradle version to 8.5
-      working-directory: platforms/android
-      run: ./gradlew wrapper --gradle-version 8.5 --distribution-type all
 
     - name: Build Android Release APK
       run: cordova build android --release
