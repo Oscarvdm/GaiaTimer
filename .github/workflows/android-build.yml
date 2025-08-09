@@ -33,6 +33,10 @@ jobs:
     - name: Add Android Platform
       run: cordova platform add android@12.0.0 --save
 
+    - name: Install Android Build Tools 33.0.2
+      run: |
+        sdkmanager "build-tools;33.0.2"
+
     - name: Build Android Release APK
       run: cordova build android --release
 
