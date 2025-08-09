@@ -1,0 +1,65 @@
+name: Android APK Build & Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install Cordova CLI
+      run: npm install -g cordova@12.0.0
+
+    - name: Add Android Platform
+      run: cordova platform add android@12.0.0 --save
+
+    - name: Build Android Release APK
+      run: cordova build android --release --buildConfig=build.json
+
+    - name: Sign APK (Placeholder - Requires Keystore and Password as Secrets)
+      run: |
+        echo "To sign your APK, you will need to provide your keystore file and password as GitHub Secrets."
+        echo "Example: jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore your-keystore.keystore platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk your_alias"
+        echo "Example: zipalign -v 4 platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk platforms/android/app/build/outputs/apk/release/app-release-signed.apk"
+        # For a real workflow, you would use secrets to retrieve the keystore and password,
+        # then use jarsigner and zipalign to sign and align the APK.
+        # Example:
+        # echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android-keystore.keystore
+        # jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore android-keystore.keystore platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk ${{ secrets.KEYSTORE_ALIAS }} -storepass ${{ secrets.KEYSTORE_PASSWORD }}
+        # zipalign -v 4 platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk platforms/android/app/build/outputs/apk/release/app-release-signed.apk
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v1.0.${{ github.run_number }}
+        release_name: Release v1.0.${{ github.run_number }}
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk # Or app-release-signed.apk if signing is implemented
+        asset_name: GaiaTimer-v1.0.${{ github.run_number }}.apk
+        asset_content_type: application/vnd.android.package-archive
