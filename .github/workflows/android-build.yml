@@ -29,8 +29,8 @@ jobs:
       run: cordova platform add android@12.0.0 --save
 
     - name: Set Gradle version to 8.5
-      run: |
-        ./gradlew wrapper --gradle-version 8.5 --distribution-type all
+      working-directory: platforms/android
+      run: ./gradlew wrapper --gradle-version 8.5 --distribution-type all
 
     - name: Build Android Release APK
       run: cordova build android --release
