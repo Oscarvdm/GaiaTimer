@@ -29,7 +29,7 @@ jobs:
       run: cordova platform add android@12.0.0 --save
 
     - name: Build Android Release APK
-      run: cordova build android --release --buildConfig=build.json
+      run: cordova build android --release
 
     - name: Sign APK (Placeholder - Requires Keystore and Password as Secrets)
       run: |
